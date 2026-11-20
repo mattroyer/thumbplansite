@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>thumb: finger, but for the Atmosphere</title>
+<meta name="description" content="thumb is a tiny command-line tool for .plan files over the AT Protocol. Write a plan; anyone can read it with your handle.">
+<meta property="og:title" content="thumb 👍">
+<meta property="og:description" content="finger and .plan files over the AT Protocol.">
+<meta property="og:url" content="https://thumbplan.date/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👍</text></svg>">
+<style>
+  :root {
+    --bg: #faf8f3;
+    --fg: #1d1b18;
+    --muted: #6b665c;
+    --rule: #e3ded2;
+    --term-bg: #1b1a17;
+    --term-fg: #e8e4d8;
+    --term-dim: #8f897b;
+    --accent: #b5541c;
+    --term-accent: #f0a868;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141311;
+      --fg: #e8e4d8;
+      --muted: #a29c8d;
+      --rule: #2c2a26;
+      --term-bg: #0c0b0a;
+      --accent: #f0a868;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 17px/1.6 var(--sans);
+  }
+  main { max-width: 46rem; margin: 0 auto; padding: 4rem 1.25rem 3rem; }
+  h1 {
+    font: 700 clamp(2.6rem, 8vw, 3.6rem)/1 var(--mono);
+    letter-spacing: -0.03em;
+    margin: 0 0 0.75rem;
+  }
+  .tagline { font-size: 1.3rem; margin: 0 0 1.5rem; }
+  .tagline code { font-size: 0.95em; }
+  h2 {
+    font: 600 0.8rem/1 var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin: 3rem 0 1rem;
+  }
+  p { margin: 0 0 1rem; }
+  a { color: var(--accent); text-underline-offset: 0.18em; }
+  code { font-family: var(--mono); font-size: 0.9em; }
+  p code, li code, td code { background: var(--rule); padding: 0.1em 0.35em; border-radius: 4px; }
+
+  .install {
+    display: flex;
+    align-items: stretch;
+    background: var(--term-bg);
+    color: var(--term-fg);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .install pre {
+    flex: 1;
+    margin: 0;
+    padding: 1rem 1.1rem;
+    overflow-x: auto;
+    font: 0.95rem/1.5 var(--mono);
+  }
+  .install pre::before { content: "$ "; color: var(--term-dim); }
+  .install button {
+    flex: none;
+    border: 0;
+    border-left: 1px solid #2f2d29;
+    background: transparent;
+    color: var(--term-accent);
+    font: 600 0.85rem var(--mono);
+    padding: 0 1.1rem;
+    cursor: pointer;
+  }
+  .install button:hover, .install button:focus-visible { background: #26241f; outline: none; }
+  .note { color: var(--muted); font-size: 0.92rem; margin-top: 0.75rem; }
+
+  .term {
+    background: var(--term-bg);
+    color: var(--term-fg);
+    border-radius: 10px;
+    padding: 1.1rem 1.2rem;
+    overflow-x: auto;
+    font: 0.9rem/1.55 var(--mono);
+    margin: 0;
+  }
+  .term .dim { color: var(--term-dim); }
+  .term .hl { color: var(--term-accent); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+  td { padding: 0.55rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  td:first-child { white-space: nowrap; padding-right: 1.25rem; }
+  td:first-child code { background: none; padding: 0; color: var(--accent); }
+
+  ol { padding-left: 1.3rem; margin: 0; }
+  li { margin-bottom: 0.5rem; }
+
+  footer {
+    margin-top: 3.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  @media (max-width: 34rem) {
+    td:first-child { white-space: normal; }
+    .install button { padding: 0 0.8rem; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>thumb 👍</h1>
+  <p class="tagline">Like <code>finger</code>, but for the Atmosphere.</p>
+  <p>
+    thumb brings back <code>.plan</code> files, the plain-text status updates
+    John Carmack used to post from id Software, on top of the AT Protocol.
+    Your plan lives in your own account's repo (on Bluesky, Tangled, or a server
+    you run), and anyone can read it with just your handle. No feed, no likes,
+    no algorithm. Just a text file.
+  </p>
+
+  <h2>Install</h2>
+  <div class="install">
+    <pre id="cmd">curl -fsSL https://thumbplan.date/install.sh | sh</pre>
+    <button type="button" id="copy" aria-label="Copy install command">copy</button>
+  </div>
+  <p class="note">
+    macOS, Linux and FreeBSD. Running it again updates thumb.
+    <a href="/install.sh">Read the script</a> first if you like (you should).
+    Windows: grab a build from
+    <a href="https://github.com/mattroyer/thumb/releases">GitHub releases</a>.
+  </p>
+
+  <h2>What it looks like</h2>
+<pre class="term"><span class="dim">$</span> thumb simpson.example.com
+Login: simpson.example.com                   Name: Homer Simpson
+Last plan update: Fri Nov 20 07:58 2026 (PST)
+Plan:
+<span class="hl">*</span> ate the donuts in the break room (all of them)
+<span class="hl">*</span> napped at the safety console. safety first, then nap
+<span class="hl">+</span> fixed the gutter Marge asked about in April
+<span class="hl">-</span> jogging with Flanders
+
+Next: Moe's.</pre>
+  <p class="note">
+    <code>*</code> done, <code>+</code> done late, <code>-</code> not happening.
+    That's the old Carmack shorthand, but a plan is plain text: write it however you like.
+  </p>
+
+  <h2>Use it</h2>
+  <table>
+    <tr><td><code>thumb &lt;handle&gt;</code></td><td>Read someone's plan. No account needed.</td></tr>
+    <tr><td><code>thumb -n 10 &lt;handle&gt;</code></td><td>Read their last 10 entries, as a log.</td></tr>
+    <tr><td><code>thumb login</code></td><td>Sign in with your handle and an app password.</td></tr>
+    <tr><td><code>thumb edit</code></td><td>Open <code>~/.plan</code> in your editor. Save and quit to publish.</td></tr>
+    <tr><td><code>thumb post</code></td><td>Publish <code>~/.plan</code> as it is, after editing it however you like.</td></tr>
+    <tr><td><code>thumb serve</code></td><td>Run a real finger server, so <code>finger you@yourhost</code> works.</td></tr>
+  </table>
+
+  <h2>How it works</h2>
+  <ol>
+    <li>Your handle points to your account's ID, and your ID points to the server that holds your data.</li>
+    <li>Each time you publish, thumb adds a <code>date.thumbplan.plan</code> record to your own repo. Your history is kept; the newest entry is your current plan.</li>
+    <li>Reading is a public request straight to that server. There's no thumb server in the middle; this website is the only thing thumb runs.</li>
+  </ol>
+
+  <footer>
+    <a href="https://github.com/mattroyer/thumb">Source on GitHub</a> ·
+    Built on the <a href="https://atproto.com">AT Protocol</a> ·
+    With love to <code>finger(1)</code>
+  </footer>
+</main>
+<script>
+  (function () {
+    var btn = document.getElementById("copy");
+    var text = document.getElementById("cmd").textContent;
+    function done(label) {
+      btn.textContent = label;
+      setTimeout(function () { btn.textContent = "copy"; }, 1600);
+    }
+    btn.addEventListener("click", function () {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(function () { done("copied"); }, fallback);
+      } else {
+        fallback();
+      }
+    });
+    function fallback() {
+      var range = document.createRange();
+      range.selectNodeContents(document.getElementById("cmd"));
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      try { document.execCommand("copy"); done("copied"); } catch (e) { done("select + ⌘C"); }
+    }
+  })();
+</script>
+</body>
+</html>
